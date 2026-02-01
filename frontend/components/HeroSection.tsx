@@ -61,95 +61,85 @@ export default function HeroSection({ content }: HeroProps) {
                 <Scene3D />
             </div>
 
-            <AnimatePresence mode='wait'>
-                <motion.div
-                    key={currentSlide}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.8 }}
-                    className="absolute inset-0 z-10"
+            {/* Carousel Items */}
+            {slides.map((slide, idx) => (
+                <div
+                    key={idx}
+                    className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${idx === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                 >
-                    {/* Background Backdrop */}
-                    <div className="absolute inset-0 bg-brand-dark/80 backdrop-blur-sm">
-                        <motion.div
-                            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-                            transition={{ duration: 8, repeat: Infinity }}
-                            className="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-primary/20 rounded-full blur-[120px]"
-                        />
-                        <motion.div
-                            animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.4, 0.2] }}
-                            transition={{ duration: 10, repeat: Infinity, delay: 1 }}
-                            className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-secondary/10 rounded-full blur-[100px]"
-                        />
-                    </div>
+                    {/* Simplified Background - No heavy blurs */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/95 to-transparent"></div>
 
                     <div className="container mx-auto px-6 h-full flex items-center pt-20">
                         <div className="flex flex-col lg:flex-row items-center gap-16 w-full">
                             {/* Text Content */}
                             <div className="lg:w-1/2 space-y-8 relative z-20">
                                 <motion.h1
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+                                    key={`title-${idx}`}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ duration: 0.5, delay: 0.1 }}
                                     className="text-5xl lg:text-7xl font-bold tracking-tight leading-[1.1] text-white"
                                 >
-                                    {slides[currentSlide].title}
+                                    {slide.title}
                                 </motion.h1>
                                 <motion.p
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.4, duration: 0.8 }}
+                                    key={`desc-${idx}`}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.5, delay: 0.2 }}
                                     className="text-xl leading-relaxed max-w-lg text-gray-300"
                                 >
-                                    {slides[currentSlide].subtitle}
+                                    {slide.subtitle}
                                 </motion.p>
                                 <motion.div
-                                    initial={{ y: 20, opacity: 0 }}
-                                    animate={{ y: 0, opacity: 1 }}
-                                    transition={{ delay: 0.6, duration: 0.8 }}
+                                    key={`cta-${idx}`}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ duration: 0.4, delay: 0.3 }}
                                     className="flex flex-col sm:flex-row gap-4"
                                 >
                                     <Link
-                                        href={slides[currentSlide].cta_primary_url || "#"}
-                                        className="px-8 py-4 rounded-full font-semibold transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 flex items-center justify-center gap-2 bg-brand-primary text-white hover:bg-violet-600 shadow-brand-primary/20"
+                                        href={slide.cta_primary_url || "#"}
+                                        className="px-8 py-4 rounded-full font-semibold transition-all hover:-translate-y-1 flex items-center justify-center gap-2 bg-brand-primary text-white hover:bg-violet-600"
                                     >
-                                        {slides[currentSlide].cta_primary}
+                                        {slide.cta_primary}
                                         <ArrowRight className="w-4 h-4" />
                                     </Link>
                                     <Link
-                                        href={slides[currentSlide].cta_secondary_url || "#"}
+                                        href={slide.cta_secondary_url || "#"}
                                         className="px-8 py-4 border rounded-full font-semibold transition-all border-gray-700 text-white hover:bg-white/10 flex items-center justify-center"
                                     >
-                                        {slides[currentSlide].cta_secondary}
+                                        {slide.cta_secondary}
                                     </Link>
                                 </motion.div>
                             </div>
 
-                            {/* Visual/Image */}
+                            {/* Visual/Image - Simplified Entry */}
                             <div className="lg:w-1/2 relative hidden lg:block z-20">
                                 <motion.div
-                                    initial={{ opacity: 0, x: 20, rotate: 2 }}
-                                    animate={{ opacity: 1, x: 0, rotate: 0 }}
-                                    transition={{ duration: 1, delay: 0.4 }}
+                                    key={`img-${idx}`}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.6 }}
                                 >
-                                    {slides[currentSlide].image_url ? (
-                                        <div className="relative z-10 rounded-2xl shadow-2xl overflow-hidden border border-gray-100 hover:scale-[1.02] transition-transform duration-500">
+                                    {slide.image_url ? (
+                                        <div className="relative z-10 rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
                                             <img
-                                                src={slides[currentSlide].image_url}
-                                                alt={slides[currentSlide].title}
+                                                src={slide.image_url}
+                                                alt={slide.title}
                                                 className="w-full h-auto object-cover"
                                             />
                                         </div>
                                     ) : (
-                                        <HeroVisual style={slides[currentSlide].style} />
+                                        <HeroVisual style={slide.style} />
                                     )}
                                 </motion.div>
                             </div>
                         </div>
                     </div>
-                </motion.div>
-            </AnimatePresence>
+                </div>
+            ))}
 
             {/* Controls */}
             {slides.length > 1 && (

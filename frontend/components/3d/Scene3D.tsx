@@ -1,31 +1,35 @@
 "use client";
 
 import { Canvas } from '@react-three/fiber';
-import { Float, PerspectiveCamera, Environment, MeshTransmissionMaterial } from '@react-three/drei';
+import { Float, PerspectiveCamera } from '@react-three/drei';
 import { Suspense } from 'react';
 
-function FloatingShape({ position, color, ...props }: any) {
+function ShoppingBag({ position, color, ...props }: any) {
     return (
         <Float
-            speed={2} // Animation speed
-            rotationIntensity={1.5} // XYZ rotation intensity
-            floatIntensity={2} // Up/down float intensity
+            speed={2}
+            rotationIntensity={0.5}
+            floatIntensity={1}
         >
-            <mesh position={position} {...props}>
-                <dodecahedronGeometry args={[1, 0]} /> {/* Clean geometric shape */}
-                <MeshTransmissionMaterial
-                    backside
-                    samples={2} // OPTIMIZED: Reduced from 4
-                    thickness={0.5}
-                    chromaticAberration={0.02}
-                    anisotropy={0.1}
-                    distortion={0.0} // OPTIMIZED: Disabled expensive distortion
-                    distortionScale={0.0}
-                    temporalDistortion={0.0}
-                    color={color}
-                    resolution={256} // OPTIMIZED: Reduced from 512
-                />
-            </mesh>
+            <group position={position} {...props}>
+                {/* Bag Body */}
+                <mesh position={[0, 0, 0]}>
+                    <boxGeometry args={[1.2, 1.4, 0.4]} />
+                    <meshStandardMaterial color={color} roughness={0.3} metalness={0.1} />
+                </mesh>
+
+                {/* Bag Handle */}
+                <mesh position={[0, 0.6, 0]} rotation={[0, 0, 0]}>
+                    <torusGeometry args={[0.3, 0.05, 16, 32, 3.2]} />
+                    <meshStandardMaterial color="#ffffff" roughness={0.5} />
+                </mesh>
+
+                {/* Shopify-like Logo Badge (Simple Circle) */}
+                <mesh position={[0, 0, 0.21]}>
+                    <circleGeometry args={[0.3, 32]} />
+                    <meshStandardMaterial color="#ffffff" />
+                </mesh>
+            </group>
         </Float>
     );
 }
@@ -33,24 +37,25 @@ function FloatingShape({ position, color, ...props }: any) {
 export default function Scene3D() {
     return (
         <div className="absolute inset-0 z-0 pointer-events-none hidden md:block">
-            <Canvas dpr={[1, 1.5]}> {/* Cap pixel ratio for performance */}
+            <Canvas dpr={[1, 1.5]} gl={{ alpha: true, antialias: true }}>
                 <Suspense fallback={null}>
-                    <PerspectiveCamera makeDefault position={[0, 0, 10]} />
-                    <Environment preset="city" />
+                    <PerspectiveCamera makeDefault position={[0, 0, 8]} />
 
-                    <ambientLight intensity={0.5} />
-                    <directionalLight position={[10, 10, 5]} intensity={1} />
+                    {/* Standard Lighting - Very Cheap Performance */}
+                    <ambientLight intensity={0.7} />
+                    <directionalLight position={[5, 10, 5]} intensity={1} />
+                    <pointLight position={[-5, 5, 5]} intensity={0.5} color="#7C3AED" />
 
-                    {/* Floating Shapes */}
-                    <FloatingShape position={[-6, 2, -2]} scale={1.5} color="#7C3AED" /> {/* Brand Primary */}
-                    <FloatingShape position={[6, -2, -4]} scale={2} color="#3B82F6" /> {/* Brand Secondary */}
-                    <FloatingShape position={[0, 4, -8]} scale={1} color="#2DD4BF" /> {/* Brand Accent */}
-                    <FloatingShape position={[-8, -4, -6]} scale={1.2} color="#EC4899" /> {/* Pink/Rose */}
+                    {/* Floating Shopping Bags */}
+                    <ShoppingBag position={[3.5, 1, 0]} rotation={[0, -0.3, 0.1]} color="#95BF47" /> {/* Shopify Green */}
+                    <ShoppingBag position={[-3.5, -1, -1]} rotation={[0, 0.3, -0.1]} color="#7C3AED" /> {/* Brand Purple */}
+
+                    {/* Distant muted bags for depth */}
+                    <ShoppingBag position={[5, -3, -4]} rotation={[0.2, 0, 0]} color="#3B82F6" scale={0.7} />
+                    <ShoppingBag position={[-5, 3, -5]} rotation={[-0.2, 0, 0]} color="#2DD4BF" scale={0.7} />
 
                 </Suspense>
             </Canvas>
-            {/* Gradient Overlay to blend with site - Dark Mode */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#05050A]" />
         </div>
     );
 }
