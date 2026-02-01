@@ -46,7 +46,7 @@ export default function HeroSection({ content }: HeroProps) {
         if (slides.length <= 1) return;
         const timer = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
-        }, 8000); // Slower for nicer reading
+        }, 8000); // 8s per slide
         return () => clearInterval(timer);
     }, [slides.length]);
 
@@ -55,120 +55,144 @@ export default function HeroSection({ content }: HeroProps) {
 
     if (!content) return null;
 
+    // Animation Variants
+    const letterAnim = {
+        initial: { y: "100%" },
+        animate: { y: 0, transition: { duration: 0.6, ease: [0.33, 1, 0.68, 1] } }
+    };
+
+    const containerAnim = {
+        animate: {
+            transition: {
+                staggerChildren: 0.05,
+                delayChildren: 0.2
+            }
+        }
+    };
+
     return (
-        <section className="relative overflow-hidden min-h-[800px] flex items-center bg-gray-50">
+        <section className="relative overflow-hidden min-h-[850px] flex items-center bg-[#05050A]"> {/* Dark Background Base */}
             <div className="absolute inset-0 z-0">
                 <Scene3D />
             </div>
 
-            {/* Carousel Items */}
-            {slides.map((slide, idx) => (
-                <div
-                    key={idx}
-                    className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${idx === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
-                >
-                    {/* Simplified Background - No heavy blurs */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/95 to-transparent"></div>
+            {/* Gradient Overlay for Depth */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#05050A] via-[#05050A]/90 to-transparent pointer-events-none z-0" />
 
-                    <div className="container mx-auto px-6 h-full flex items-center pt-20">
-                        <div className="flex flex-col lg:flex-row items-center gap-16 w-full">
-                            {/* Text Content */}
-                            <div className="lg:w-1/2 space-y-8 relative z-20">
-                                <motion.h1
-                                    key={`title-${idx}`}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ duration: 0.5, delay: 0.1 }}
-                                    className="text-5xl lg:text-7xl font-bold tracking-tight leading-[1.1] text-white"
-                                >
-                                    {slide.title}
-                                </motion.h1>
-                                <motion.p
-                                    key={`desc-${idx}`}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.5, delay: 0.2 }}
-                                    className="text-xl leading-relaxed max-w-lg text-gray-300"
-                                >
-                                    {slide.subtitle}
-                                </motion.p>
-                                <motion.div
-                                    key={`cta-${idx}`}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.4, delay: 0.3 }}
-                                    className="flex flex-col sm:flex-row gap-4"
-                                >
-                                    <Link
-                                        href={slide.cta_primary_url || "#"}
-                                        className="px-8 py-4 rounded-full font-semibold transition-all hover:-translate-y-1 flex items-center justify-center gap-2 bg-brand-primary text-white hover:bg-violet-600"
-                                    >
-                                        {slide.cta_primary}
-                                        <ArrowRight className="w-4 h-4" />
-                                    </Link>
-                                    <Link
-                                        href={slide.cta_secondary_url || "#"}
-                                        className="px-8 py-4 border rounded-full font-semibold transition-all border-gray-700 text-white hover:bg-white/10 flex items-center justify-center"
-                                    >
-                                        {slide.cta_secondary}
-                                    </Link>
-                                </motion.div>
-                            </div>
+            {/* Background Glows */}
+            <div className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-brand-primary/10 rounded-full blur-[150px] pointer-events-none" />
+            <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-brand-secondary/10 rounded-full blur-[150px] pointer-events-none" />
 
-                            {/* Visual/Image - Simplified Entry */}
-                            <div className="lg:w-1/2 relative hidden lg:block z-20">
-                                <motion.div
-                                    key={`img-${idx}`}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.6 }}
-                                >
-                                    {slide.image_url ? (
-                                        <div className="relative z-10 rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
-                                            <img
-                                                src={slide.image_url}
-                                                alt={slide.title}
-                                                className="w-full h-auto object-cover"
-                                            />
+
+            {/* Content Container */}
+            <div className="container mx-auto px-6 h-full flex items-center relative z-10 pt-20">
+                <div className="w-full relative">
+                    {slides.map((slide, idx) => (
+                        idx === currentSlide && (
+                            <div key={idx} className="flex flex-col lg:flex-row items-center gap-16 w-full">
+
+                                {/* Left: Text Content */}
+                                <div className="lg:w-1/2 space-y-10">
+                                    {/* Masked Title Reveal */}
+                                    <motion.div
+                                        className="space-y-2 overflow-hidden"
+                                        variants={containerAnim}
+                                        initial="initial"
+                                        animate="animate"
+                                    >
+                                        <div className="overflow-hidden">
+                                            <motion.h1 variants={letterAnim} className="text-6xl lg:text-8xl font-bold tracking-tight text-white leading-tight">
+                                                {slide.title.split(" ").slice(0, 3).join(" ")} {/* Split title for effect if needed, or just animate whole block */}
+                                            </motion.h1>
                                         </div>
-                                    ) : (
-                                        <HeroVisual style={slide.style} />
-                                    )}
-                                </motion.div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            ))}
+                                        <div className="overflow-hidden">
+                                            <motion.h1 variants={letterAnim} className="text-6xl lg:text-8xl font-bold tracking-tight text-brand-primary leading-tight">
+                                                {slide.title.split(" ").slice(3).join(" ")}
+                                            </motion.h1>
+                                        </div>
+                                    </motion.div>
 
-            {/* Controls */}
+                                    {/* Description Fade */}
+                                    <motion.p
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.5, duration: 0.8 }}
+                                        className="text-xl leading-relaxed max-w-lg text-gray-400"
+                                    >
+                                        {slide.subtitle}
+                                    </motion.p>
+
+                                    {/* Buttons */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.7, duration: 0.8 }}
+                                        className="flex flex-col sm:flex-row gap-4"
+                                    >
+                                        <Link
+                                            href={slide.cta_primary_url || "#"}
+                                            className="px-8 py-4 rounded-full font-semibold transition-all hover:scale-105 flex items-center justify-center gap-2 bg-brand-primary text-white hover:bg-violet-600 shadow-[0_0_30px_-5px_var(--color-brand-primary)]"
+                                        >
+                                            {slide.cta_primary}
+                                            <ArrowRight className="w-5 h-5" />
+                                        </Link>
+                                        <Link
+                                            href={slide.cta_secondary_url || "#"}
+                                            className="px-8 py-4 border rounded-full font-semibold transition-all border-white/20 text-white hover:bg-white/10 flex items-center justify-center backdrop-blur-sm"
+                                        >
+                                            {slide.cta_secondary}
+                                        </Link>
+                                    </motion.div>
+                                </div>
+
+                                {/* Right: Hero Visual with Parallax Hover */}
+                                <div className="lg:w-1/2 relative hidden lg:flex justify-center items-center perspective-[2000px]">
+                                    <motion.div
+                                        initial={{ opacity: 0, rotateX: 10, rotateY: 10, scale: 0.9 }}
+                                        animate={{ opacity: 1, rotateX: 0, rotateY: 0, scale: 1 }}
+                                        transition={{ duration: 1, ease: "easeOut" }}
+                                        whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02 }} // Parallax feel
+                                        className="relative z-10"
+                                        style={{ transformStyle: "preserve-3d" }} // 3D Tilt support
+                                    >
+                                        {slide.image_url ? (
+                                            <div className="relative z-10 rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] overflow-hidden border border-white/10 bg-brand-surface/50 backdrop-blur-xl">
+                                                <img
+                                                    src={slide.image_url}
+                                                    alt={slide.title}
+                                                    className="w-full h-auto object-cover max-h-[600px]"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <HeroVisual style={slide.style} />
+                                        )}
+                                    </motion.div>
+
+                                    {/* Decorative Glow behind visual */}
+                                    <div className="absolute inset-0 bg-brand-primary/20 blur-[100px] -z-10 rounded-full scale-75 animate-pulse-slow"></div>
+                                </div>
+                            </div>
+                        )
+                    ))}
+                </div>
+            </div>
+
+            {/* Slider Controls */}
             {slides.length > 1 && (
-                <>
+                <div className="absolute bottom-12 right-12 z-20 flex gap-4">
                     <button
                         onClick={prevSlide}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-gray-500 hover:text-indigo-600 transition-colors"
+                        className="p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110"
                     >
                         <ChevronLeft className="w-6 h-6" />
                     </button>
                     <button
                         onClick={nextSlide}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 z-30 p-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-gray-500 hover:text-indigo-600 transition-colors"
+                        className="p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110"
                     >
                         <ChevronRight className="w-6 h-6" />
                     </button>
-
-                    {/* Indicators */}
-                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 flex gap-3">
-                        {slides.map((_, idx) => (
-                            <button
-                                key={idx}
-                                onClick={() => setCurrentSlide(idx)}
-                                className={`w-3 h-3 rounded-full transition-all duration-300 ${idx === currentSlide ? 'bg-indigo-600 w-8' : 'bg-gray-300 hover:bg-gray-400'
-                                    }`}
-                            />
-                        ))}
-                    </div>
-                </>
+                </div>
             )}
         </section>
     );
@@ -179,51 +203,48 @@ function HeroVisual({ style }: { style?: string }) {
     const isDark = style === 'dark-mode';
 
     return (
-        <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className={`relative z-10 rounded-2xl shadow-2xl border p-2 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}
-        >
-            <div className={`rounded-xl p-6 border ${isDark ? 'bg-gray-900 border-gray-700' : 'bg-gray-50 border-gray-100'}`}>
-                <div className="flex justify-between items-center mb-8">
-                    <div className="space-y-2">
-                        <div className={`h-4 w-32 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-200'}`}></div>
-                        <div className={`h-8 w-48 rounded ${isDark ? 'bg-gray-700' : 'bg-gray-900'}`}></div>
+        <div className={`relative z-10 rounded-3xl shadow-2xl border p-3 bg-white/5 border-white/10 backdrop-blur-xl`}>
+            <div className={`rounded-2xl p-8 border bg-[#0F111A]/80 border-white/10 min-w-[500px]`}>
+                <div className="flex justify-between items-center mb-10">
+                    <div className="space-y-3">
+                        <div className="h-5 w-40 rounded-full bg-white/10 animate-pulse"></div>
+                        <div className="h-10 w-64 rounded-lg bg-white/5"></div>
                     </div>
-                    <div className="h-10 w-10 bg-indigo-500/20 rounded-full flex items-center justify-center text-indigo-500">
-                        <TrendingUp className="w-5 h-5" />
+                    <div className="h-12 w-12 bg-brand-primary/20 rounded-full flex items-center justify-center text-brand-primary">
+                        <TrendingUp className="w-6 h-6" />
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-8">
-                    <div className={`p-4 rounded-lg shadow-sm border ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}>
-                        <div className="flex items-center gap-2 text-gray-500 mb-2">
+                <div className="grid grid-cols-2 gap-6 mb-10">
+                    <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                        <div className="flex items-center gap-2 text-gray-400 mb-3">
                             <Users className="w-4 h-4" /> Visitors
                         </div>
-                        <div className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>12,405</div>
-                        <div className="text-green-500 text-sm font-medium">+12%</div>
+                        <div className="text-3xl font-bold text-white">24,500</div>
+                        <div className="text-brand-accent text-sm font-medium mt-1">+18% vs last week</div>
                     </div>
-                    <div className={`p-4 rounded-lg shadow-sm border ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}>
-                        <div className="flex items-center gap-2 text-gray-500 mb-2">
+                    <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                        <div className="flex items-center gap-2 text-gray-400 mb-3">
                             <DollarSign className="w-4 h-4" /> Revenue
                         </div>
-                        <div className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>$45,200</div>
-                        <div className="text-green-500 text-sm font-medium">+8%</div>
+                        <div className="text-3xl font-bold text-white">$68,200</div>
+                        <div className="text-brand-accent text-sm font-medium mt-1">+24% vs last week</div>
                     </div>
                 </div>
 
-                <div className={`h-32 rounded-lg border p-4 flex items-end gap-2 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'}`}>
-                    {[40, 60, 45, 70, 85, 65, 90, 80].map((h, i) => (
+                {/* Animated Chart Bars */}
+                <div className="h-40 rounded-xl border border-white/5 bg-white/5 p-6 flex items-end gap-3">
+                    {[35, 55, 45, 75, 60, 85, 95, 80].map((h, i) => (
                         <motion.div
                             key={i}
                             initial={{ height: 0 }}
                             animate={{ height: `${h}%` }}
-                            transition={{ duration: 1, delay: 0.8 + (i * 0.1) }}
-                            className="flex-1 bg-indigo-500/50 hover:bg-indigo-500 transition-colors rounded-t-sm"
+                            transition={{ duration: 1.5, delay: 0.5 + (i * 0.1), ease: "easeOut" }}
+                            className="flex-1 bg-gradient-to-t from-brand-primary to-brand-secondary rounded-t-md opacity-80 hover:opacity-100 transition-opacity"
                         />
                     ))}
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 }
