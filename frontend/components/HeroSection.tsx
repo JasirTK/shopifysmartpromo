@@ -55,8 +55,8 @@ export default function HeroSection({ content }: HeroProps) {
 
     if (!content) return null;
 
-    // Animation Variants
-    const letterAnim = {
+    // Animation Variants - Renamed to force refresh
+    const titleRevealAnim = {
         initial: { y: "100%" },
         animate: {
             y: 0,
@@ -67,7 +67,7 @@ export default function HeroSection({ content }: HeroProps) {
         }
     };
 
-    const containerAnim = {
+    const titleContainerAnim = {
         animate: {
             transition: {
                 staggerChildren: 0.05,
@@ -103,17 +103,17 @@ export default function HeroSection({ content }: HeroProps) {
                                     {/* Masked Title Reveal */}
                                     <motion.div
                                         className="space-y-2 overflow-hidden"
-                                        variants={containerAnim}
+                                        variants={titleContainerAnim as any}
                                         initial="initial"
                                         animate="animate"
                                     >
                                         <div className="overflow-hidden">
-                                            <motion.h1 variants={letterAnim} className="text-6xl lg:text-8xl font-bold tracking-tight text-white leading-tight">
+                                            <motion.h1 variants={titleRevealAnim as any} className="text-6xl lg:text-8xl font-bold tracking-tight text-white leading-tight">
                                                 {slide.title.split(" ").slice(0, 3).join(" ")} {/* Split title for effect if needed, or just animate whole block */}
                                             </motion.h1>
                                         </div>
                                         <div className="overflow-hidden">
-                                            <motion.h1 variants={letterAnim} className="text-6xl lg:text-8xl font-bold tracking-tight text-brand-primary leading-tight">
+                                            <motion.h1 variants={titleRevealAnim as any} className="text-6xl lg:text-8xl font-bold tracking-tight text-brand-primary leading-tight">
                                                 {slide.title.split(" ").slice(3).join(" ")}
                                             </motion.h1>
                                         </div>
