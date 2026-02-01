@@ -35,21 +35,16 @@ async def upload_file(file: UploadFile = File(...), current_user: User = Depends
     try:
         if USE_CLOUDINARY:
             # Upload to Cloudinary
-            # result = cloudinary.uploader.upload(file.file, public_id=file.filename.split('.')[0])
-            # Check if it's an image to optimize
             result = cloudinary.uploader.upload(file.file, folder="smart_promo_uploads")
             return {"url": result.get("secure_url")}
         else:
-            # Fallback for Local Dev (or if keys missing)
-            filename = file.filename.replace(" ", "_")
-            file_path = UPLOAD_DIR / filename
-            
-            with file_path.open("wb") as buffer:
-                shutil.copyfileobj(file.file, buffer)
-            
-            # Assuming localhost:8000 for dev. In prod without Cloudinary this breaks, 
-            # hence the requirement for Cloudinary on Vercel.
-            return {"url": f"http://localhost:8000/static/uploads/{filename}"}
+            # Fallback: Base64 Encoding (No external dependency)
+            # This allows images to work on Vercel without Cloudinary or persistent storage
+            import base64
+            contents = await file.read()
+            encoded = base64.b64encode(contents).decode("utf-8")
+            mime_type = file.content_type or "image/png"
+            return {"url": f"data:{mime_type};base64,{encoded}"}
             
     except Exception as e:
         print(f"Upload Error: {e}")
