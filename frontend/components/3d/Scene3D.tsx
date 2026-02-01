@@ -77,7 +77,6 @@ export default function Scene3D() {
                         rotation={[0, 0, 0]}
                         polar={[-0.2, 0.2]} // Limit vertical rotation
                         azimuth={[-0.2, 0.2]} // Limit horizontal rotation
-                        config={{ mass: 1, tension: 170, friction: 26 }}
                     >
                         {/* Atmosphere: Tech Particles */}
                         <Sparkles
