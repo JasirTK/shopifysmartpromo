@@ -203,16 +203,16 @@ export default function HeroSection({ content }: HeroProps) {
                     </div>
 
                     {/* Arrow Navigation */}
-                    <div className="absolute bottom-12 right-12 z-20 flex gap-4">
+                    <div className="absolute bottom-24 md:bottom-12 left-0 w-full px-6 md:px-0 md:w-auto md:left-auto md:right-12 z-20 flex justify-between md:justify-end gap-4 pointer-events-none">
                         <button
                             onClick={prevSlide}
-                            className="p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110"
+                            className="p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110 pointer-events-auto"
                         >
                             <ChevronLeft className="w-6 h-6" />
                         </button>
                         <button
                             onClick={nextSlide}
-                            className="p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110"
+                            className="p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110 pointer-events-auto"
                         >
                             <ChevronRight className="w-6 h-6" />
                         </button>

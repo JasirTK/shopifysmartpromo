@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, ArrowRight, ChevronDown } from 'lucide-react';
 
+import { motion, AnimatePresence } from 'framer-motion';
+
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -18,7 +20,10 @@ export default function Navbar() {
 
     return (
         <>
-            <nav
+            <motion.nav
+                initial={{ y: -100 }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.5 }}
                 className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
                     ? 'py-4'
                     : 'py-6'
@@ -62,30 +67,85 @@ export default function Navbar() {
 
                         {/* Mobile Toggle */}
                         <button
-                            className="md:hidden text-gray-600 p-2"
+                            className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         >
                             {mobileMenuOpen ? <X /> : <Menu />}
                         </button>
                     </div>
                 </div>
-            </nav>
+            </motion.nav>
 
-            {/* Mobile Menu Overlay */}
-            <div className={`fixed inset-0 bg-white z-40 transform transition-transform duration-300 pt-32 px-8 ${mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-                }`}>
-                <div className="flex flex-col gap-6 text-xl font-medium text-gray-900">
-                    <Link href="#features" className="border-b border-gray-100 pb-4" onClick={() => setMobileMenuOpen(false)}>Features</Link>
-                    <Link href="#how-it-works" className="border-b border-gray-100 pb-4" onClick={() => setMobileMenuOpen(false)}>How it Works</Link>
-                    <Link href="#pricing" className="border-b border-gray-100 pb-4" onClick={() => setMobileMenuOpen(false)}>Pricing</Link>
-                    <Link href="/admin" className="text-indigo-600" onClick={() => setMobileMenuOpen(false)}>Admin Console</Link>
-                    <div className="pt-4">
-                        <button className="w-full py-4 bg-gray-900 text-white rounded-xl font-bold shadow-lg">
-                            Get Started
-                        </button>
-                    </div>
-                </div>
-            </div>
+            {/* Mobile Sidebar (Admin Style) */}
+            <AnimatePresence>
+                {mobileMenuOpen && (
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+                        />
+
+                        {/* Sidebar */}
+                        <motion.div
+                            initial={{ x: "-100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "-100%" }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                            className="fixed top-0 left-0 bottom-0 w-[280px] bg-[#0F111A] border-r border-white/10 z-50 p-6 shadow-2xl flex flex-col"
+                        >
+                            {/* Header */}
+                            <div className="flex items-center gap-3 mb-10">
+                                <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center shadow-lg shadow-brand-primary/20">
+                                    <span className="text-white font-bold text-xl">S</span>
+                                </div>
+                                <span className="text-xl font-bold text-white tracking-tight">Smart Promo</span>
+                            </div>
+
+                            {/* Menu Items */}
+                            <div className="flex-1 flex flex-col gap-2">
+                                <MobileNavLink href="#features" onClick={() => setMobileMenuOpen(false)}>Features</MobileNavLink>
+                                <MobileNavLink href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>How it Works</MobileNavLink>
+                                <MobileNavLink href="#pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</MobileNavLink>
+                                <MobileNavLink href="#tools" onClick={() => setMobileMenuOpen(false)} isSpecial>Premium Tools</MobileNavLink>
+                            </div>
+
+                            {/* Footer / CTA */}
+                            <div className="pt-6 border-t border-white/10 space-y-4">
+                                <Link
+                                    href="/admin"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="block text-center w-full py-3 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:bg-white/5 transition-all text-sm font-medium"
+                                >
+                                    Admin Console
+                                </Link>
+                                <button className="w-full py-3.5 bg-brand-primary text-white rounded-xl font-bold shadow-lg shadow-brand-primary/20 hover:bg-violet-600 transition-all flex items-center justify-center gap-2">
+                                    Get Started
+                                    <ArrowRight className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </>
+    );
+}
+
+function MobileNavLink({ href, children, onClick, isSpecial }: any) {
+    return (
+        <Link
+            href={href}
+            onClick={onClick}
+            className={`block px-4 py-3 rounded-xl text-base font-medium transition-all ${isSpecial
+                    ? "bg-brand-primary/10 text-brand-primary border border-brand-primary/20"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                }`}
+        >
+            {children}
+        </Link>
     );
 }
