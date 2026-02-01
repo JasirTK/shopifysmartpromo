@@ -15,7 +15,7 @@ services:
       - key: CLOUDINARY_CLOUD_NAME
         sync: false # User will input this in dashboard if they have it
       - key: FRONTEND_URL
-        value: https://placeholder-frontend-url.com # User to update
+        value: https://shopifysmartpromo.vercel.app
       - key: PORT
         value: 10000
 
