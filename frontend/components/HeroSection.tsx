@@ -78,7 +78,8 @@ export default function HeroSection({ content }: HeroProps) {
 
     return (
         <section className="relative overflow-hidden min-h-[850px] flex items-center bg-[#05050A]"> {/* Dark Background Base */}
-            <div className="absolute inset-0 z-0">
+            {/* 3D Scene - Interactive Depth Layer */}
+            <div className="absolute inset-0 z-0 pointer-events-auto">
                 <Scene3D />
             </div>
 
