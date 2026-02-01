@@ -56,7 +56,7 @@ export default function HeroSection({ content }: HeroProps) {
     if (!content) return null;
 
     // Animation Variants
-    const letterAnim: Variants = {
+    const letterAnim = {
         initial: { y: "100%" },
         animate: {
             y: 0,
@@ -67,7 +67,7 @@ export default function HeroSection({ content }: HeroProps) {
         }
     };
 
-    const containerAnim: Variants = {
+    const containerAnim = {
         animate: {
             transition: {
                 staggerChildren: 0.05,
@@ -194,8 +194,8 @@ export default function HeroSection({ content }: HeroProps) {
                                 key={idx}
                                 onClick={() => setCurrentSlide(idx)}
                                 className={`h-2 rounded-full transition-all duration-300 ${idx === currentSlide
-                                        ? "w-8 bg-brand-primary shadow-[0_0_10px_var(--color-brand-primary)]"
-                                        : "w-2 bg-white/20 hover:bg-white/40"
+                                    ? "w-8 bg-brand-primary shadow-[0_0_10px_var(--color-brand-primary)]"
+                                    : "w-2 bg-white/20 hover:bg-white/40"
                                     }`}
                                 aria-label={`Go to slide ${idx + 1}`}
                             />
