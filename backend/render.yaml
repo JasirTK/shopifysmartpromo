@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: smart-promo-backend
+    env: python
+    region: singapore # Optional, convenient for Asia-Pacific
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: smart-promo-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false # User will input this in dashboard if they have it
+      - key: FRONTEND_URL
+        value: https://placeholder-frontend-url.com # User to update
+      - key: PORT
+        value: 10000
+
+databases:
+  - name: smart-promo-db
+    databaseName: shopifysmartpromo
+    user: admin
+    plan: free # Render Free Tier Postgres
