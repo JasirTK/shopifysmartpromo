@@ -22,7 +22,12 @@ export default function LoginPage() {
             formData.append('username', username);
             formData.append('password', password);
 
-            const res = await fetch('http://localhost:8000/api/auth/token', {
+            // Determine API URL
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL
+                ? (process.env.NEXT_PUBLIC_API_URL.endsWith('/') ? process.env.NEXT_PUBLIC_API_URL + 'api' : process.env.NEXT_PUBLIC_API_URL + '/api')
+                : 'http://localhost:8000/api';
+
+            const res = await fetch(`${apiUrl}/auth/token`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
