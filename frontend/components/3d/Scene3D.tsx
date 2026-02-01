@@ -15,15 +15,15 @@ function FloatingShape({ position, color, ...props }: any) {
                 <dodecahedronGeometry args={[1, 0]} /> {/* Clean geometric shape */}
                 <MeshTransmissionMaterial
                     backside
-                    samples={4}
+                    samples={2} // OPTIMIZED: Reduced from 4
                     thickness={0.5}
-                    chromaticAberration={0.05}
+                    chromaticAberration={0.02}
                     anisotropy={0.1}
-                    distortion={0.1}
-                    distortionScale={0.1}
-                    temporalDistortion={0.5}
+                    distortion={0.0} // OPTIMIZED: Disabled expensive distortion
+                    distortionScale={0.0}
+                    temporalDistortion={0.0}
                     color={color}
-                    resolution={512}
+                    resolution={256} // OPTIMIZED: Reduced from 512
                 />
             </mesh>
         </Float>
@@ -32,8 +32,8 @@ function FloatingShape({ position, color, ...props }: any) {
 
 export default function Scene3D() {
     return (
-        <div className="absolute inset-0 z-0 pointer-events-none">
-            <Canvas>
+        <div className="absolute inset-0 z-0 pointer-events-none hidden md:block">
+            <Canvas dpr={[1, 1.5]}> {/* Cap pixel ratio for performance */}
                 <Suspense fallback={null}>
                     <PerspectiveCamera makeDefault position={[0, 0, 10]} />
                     <Environment preset="city" />
