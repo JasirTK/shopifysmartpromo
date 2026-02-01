@@ -186,38 +186,41 @@ export default function HeroSection({ content }: HeroProps) {
 
             {/* Slider Controls */}
             {slides.length > 1 && (
-                <>
-                    {/* Dots Indicator */}
-                    <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex gap-3">
+                <div className="absolute bottom-12 left-0 w-full px-6 md:px-12 z-20 flex items-center justify-between pointer-events-none">
+
+                    {/* Left Arrow */}
+                    <button
+                        onClick={prevSlide}
+                        className="p-3 md:p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110 pointer-events-auto"
+                        aria-label="Previous slide"
+                    >
+                        <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+                    </button>
+
+                    {/* Dots Indicator (Centered) */}
+                    <div className="flex gap-3 pointer-events-auto absolute left-1/2 -translate-x-1/2">
                         {slides.map((_, idx) => (
                             <button
                                 key={idx}
                                 onClick={() => setCurrentSlide(idx)}
                                 className={`h-2 rounded-full transition-all duration-300 ${idx === currentSlide
-                                    ? "w-8 bg-brand-primary shadow-[0_0_10px_var(--color-brand-primary)]"
-                                    : "w-2 bg-white/20 hover:bg-white/40"
+                                        ? "w-8 bg-brand-primary shadow-[0_0_10px_var(--color-brand-primary)]"
+                                        : "w-2 bg-white/20 hover:bg-white/40"
                                     }`}
                                 aria-label={`Go to slide ${idx + 1}`}
                             />
                         ))}
                     </div>
 
-                    {/* Arrow Navigation */}
-                    <div className="absolute bottom-24 md:bottom-12 left-0 w-full px-6 md:px-0 md:w-auto md:left-auto md:right-12 z-20 flex justify-between md:justify-end gap-4 pointer-events-none">
-                        <button
-                            onClick={prevSlide}
-                            className="p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110 pointer-events-auto"
-                        >
-                            <ChevronLeft className="w-6 h-6" />
-                        </button>
-                        <button
-                            onClick={nextSlide}
-                            className="p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110 pointer-events-auto"
-                        >
-                            <ChevronRight className="w-6 h-6" />
-                        </button>
-                    </div>
-                </>
+                    {/* Right Arrow */}
+                    <button
+                        onClick={nextSlide}
+                        className="p-3 md:p-4 rounded-full bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 text-white transition-all hover:scale-110 pointer-events-auto"
+                        aria-label="Next slide"
+                    >
+                        <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+                    </button>
+                </div>
             )}
         </section>
     );
