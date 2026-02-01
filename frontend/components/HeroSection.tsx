@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, TrendingUp, Users, DollarSign, ChevronLeft, ChevronRight } from 'lucide-react';
 import Scene3D from '@/components/3d/Scene3D';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 interface HeroSlide {
     title: string;
@@ -56,7 +56,7 @@ export default function HeroSection({ content }: HeroProps) {
     if (!content) return null;
 
     // Animation Variants
-    const letterAnim = {
+    const letterAnim: Variants = {
         initial: { y: "100%" },
         animate: {
             y: 0,
@@ -67,7 +67,7 @@ export default function HeroSection({ content }: HeroProps) {
         }
     };
 
-    const containerAnim = {
+    const containerAnim: Variants = {
         animate: {
             transition: {
                 staggerChildren: 0.05,
