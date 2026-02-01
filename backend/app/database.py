@@ -11,6 +11,14 @@ if not DATABASE_URL:
     # Fallback/Default for development if .env is missing or empty
     DATABASE_URL = "postgresql+asyncpg://postgres:postgres@localhost:5432/shopifysmartpromo"
 
+# Handle SSL for Vercel/Neon Postgres
+connect_args = {}
+if "vercel" in DATABASE_URL or "neon" in DATABASE_URL:
+    connect_args = {"server_settings": {"jit": "off"}} # Optional perf tweak
+    # asyncpg usually requires no special ssl arg if the URL has ?sslmode=require, 
+    # but strictly specifying it can help. 
+    # For now, rely on connection string.
+
 engine = create_async_engine(DATABASE_URL, echo=True)
 
 AsyncSessionLocal = sessionmaker(

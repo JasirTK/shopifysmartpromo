@@ -10,8 +10,15 @@ app = FastAPI(title="Smart Promo & Insights Assistant API")
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 origins = [
     "http://localhost:3000",
+    "http://localhost:3001",
+    os.getenv("FRONTEND_URL", "https://your-frontend-domain.vercel.app"),
 ]
 
 app.add_middleware(
