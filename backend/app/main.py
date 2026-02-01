@@ -18,8 +18,11 @@ load_dotenv()
 origins = [
     "http://localhost:3000",
     "http://localhost:3001",
-    os.getenv("FRONTEND_URL", "https://your-frontend-domain.vercel.app"),
+    "https://shopifysmartpromo.vercel.app",
 ]
+
+if os.getenv("FRONTEND_URL"):
+    origins.append(os.getenv("FRONTEND_URL"))
 
 app.add_middleware(
     CORSMiddleware,
