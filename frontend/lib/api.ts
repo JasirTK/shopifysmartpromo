@@ -29,10 +29,11 @@ export const getPublicContent = async (key: string) => {
 
 export const getAllContent = async () => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/public/all-content`);
+        // Timeout after 2.5s to fallback to default content (avoids Render cold-start hang)
+        const response = await axios.get(`${API_BASE_URL}/public/all-content`, { timeout: 2500 });
         return response.data;
     } catch (error) {
-        console.error("Error fetching all content:", error);
+        console.warn("API unavailable or slow (using defaults):", error);
         return [];
     }
 }
